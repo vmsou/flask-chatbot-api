@@ -1,6 +1,6 @@
 # Flask Chatbot API
 
-Este é um projeto básico de uma API em Flask para integrar e gerenciar provedores de chatbot de forma dinâmica. Atualmente, o projeto suporta múltiplos provedores, como OpenAI e Hugging Face, mas é facilmente extensível para novos provedores.
+Este é um projeto básico de uma API em Flask para integrar e gerenciar provedores de chatbot de forma dinâmica. Atualmente, o projeto suporta múltiplos provedores, como OpenAI, mas é facilmente extensível para novos provedores.
 
 ---
 
@@ -26,6 +26,7 @@ Este é um projeto básico de uma API em Flask para integrar e gerenciar provedo
 ```plaintext
 app/
 ├── __init__.py          # Inicialização do Flask
+├── chatapi.py           # Provedores para o ChatAPI
 ├── chatbot.py           # Blueprint para a rota de chatbot
 .env                     # Configurações do ambiente
 requirements.txt         # Dependências do projeto
@@ -100,3 +101,28 @@ curl -X POST http://127.0.0.1:5000/api/chat \
 -H "Content-Type: application/json" \
 -d '{"message": "Olá, tudo bem?"}'
 ```
+
+### Teste com Thunder Client (VSCode)
+1. Instale a extensão Thunder Client.
+2. Crie uma nova requisição:
+- Método: `POST`
+- URL: `http://127.0.0.1:5000/api/chat`
+- Body:
+```json
+{
+  "message": "Olá, teste!"
+}
+```
+3. Clique em "Send"
+
+## ⚙️ Adicionando Novos Provedores
+Para adicionar um novo provedor:
+1. Crie uma nova classe que herda de `ChatAPI` em `chatapi.py`.
+2. Implemente o método `reply`.
+3. Adicione a lógica do novo provedor no método `get` da classe `ChatAPIProvider`.
+
+## 🛡️ Contribuição
+Sinta-se à vontade para contribuir com melhorias e novos recursos! Faça um fork deste repositório, crie sua branch e envie um pull request.
+
+## 📝 Licença
+Este projeto está sob a licença MIT. Consulte o arquivo LICENSE para mais informações.

@@ -4,7 +4,7 @@ from abc import ABC, abstractmethod
 from typing import Literal
 
 from openai import OpenAI
-import openai
+
 
 class ChatAPI(ABC):
     @abstractmethod
@@ -14,11 +14,11 @@ class ChatAPI(ABC):
 class OpenAIChatAPI(ChatAPI):
     def __init__(self, api_key: str = None, system_content: str = "Você é um assistente útil."):
         super().__init__()
-        openai.api_key = os.getenv("OPENAI_API_KEY") if api_key is None else api_key
+        self.client = OpenAI(api_key=os.getenv("OPENAI_API_KEY") if api_key is None else api_key)
         self.system_content = system_content
 
     def reply(self, message: str) -> str:
-        response = openai.chat.completions.create(
+        response = self.client.chat.completions.create(
             model='gpt-4o-mini',
             messages=[
                 {"role": "system", "content": self.system_content},
@@ -46,13 +46,13 @@ class DeepSeekChatAPI(ChatAPI):
 
 
 class ChatAPIProvider:
+    PROVIDERS = {
+        "openai": OpenAIChatAPI,
+        "deepseek": DeepSeekChatAPI
+    }
+
     @staticmethod
-    def get(name: Literal['openai']) -> ChatAPI:
-        if name == "openai":
-            return OpenAIChatAPI()
-        elif name == "deepseek":
-            return DeepSeekChatAPI()
-        else:
-            raise ValueError(f"Provedor desconhecido: {name}")
+    def get(name: Literal['openai', 'deepseek']) -> ChatAPI:
+        return ChatAPIProvider.PROVIDERS.get(name.lower())()
 
         

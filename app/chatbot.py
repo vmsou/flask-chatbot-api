@@ -1,8 +1,11 @@
 import os
 
+from dotenv import load_dotenv
 from flask import Blueprint, request, jsonify
 
 from app.chatapi import ChatAPI, ChatAPIProvider
+
+load_dotenv()
 
 chatbot_bp = Blueprint("chatbot", __name__)
 provider = os.getenv("CHAT_PROVIDER")

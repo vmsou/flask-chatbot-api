@@ -1,6 +1,9 @@
 import os
+from dotenv import load_dotenv
 from sqlalchemy import create_engine, MetaData, insert
 from sqlalchemy import Table, Column, Integer, Text
+
+load_dotenv()
 
 DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///chatbot.db")
 engine = create_engine(DATABASE_URL)

@@ -28,6 +28,7 @@ app/
 ├── __init__.py          # Inicialização do Flask
 ├── chatapi.py           # Provedores para o ChatAPI
 ├── chatbot.py           # Blueprint para a rota de chatbot
+├── database.py          # Conexão com o banco de dados
 .env                     # Configurações do ambiente
 requirements.txt         # Dependências do projeto
 README.md                # Documentação do projeto
@@ -65,10 +66,18 @@ pip install -r requirements.txt
 ### 4. Configurar Variáveis de Ambiente
 Crie um arquivo `.env` na raiz do projeto e adicione as seguintes variáveis (substitua pelos seus valores reais):
 ```bash
-OPENAI_API_KEY=sua-chave-aqui
+CHAT_PROVIDER=openai
+OPENAI_API_KEY=sk-...
+DEEPSEEK_API_KEY=sk-...
+DATABASE_URL=sqlite:///chatbot.db
 ```
 
-### 5. Rodar o Servidor
+### 5. Configurar o banco de dados
+```bash
+flask init-db
+```
+
+### 6. Rodar o Servidor
 Execute o servidor Flask:
 ```bash
 flask run

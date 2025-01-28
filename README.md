@@ -39,7 +39,7 @@ Siga os passos abaixo para rodar o projeto:
 ### 1. Clonar o Repositório
 Clone este repositório para a sua máquina local:
 ```bash
-git clone https://github.com/seu-usuario/flask-chatbot-api.git
+git clone https://github.com/vmsou/flask-chatbot-api.git
 cd flask-chatbot-api
 ```
 

@@ -1,6 +1,6 @@
 # Flask Chatbot API
 
-Este é um projeto básico de uma API em Flask para integrar e gerenciar provedores de chatbot de forma dinâmica. Atualmente, o projeto suporta múltiplos provedores, como OpenAI, mas é facilmente extensível para novos provedores.
+Este é um projeto básico de uma API em Flask para integrar e gerenciar provedores de chatbot de forma dinâmica. Atualmente, o projeto suporta múltiplos provedores, como OpenAI e HuggingFace, mas é facilmente extensível para novos provedores.
 
 ---
 
@@ -8,7 +8,7 @@ Este é um projeto básico de uma API em Flask para integrar e gerenciar provedo
 
 - Rota para interação com um chatbot (`/api/chat`).
 - Estrutura modular usando blueprints.
-- Suporte dinâmico para diferentes provedores de IA (OpenAI, etc.).
+- Suporte dinâmico para diferentes provedores de IA (OpenAI, HuggingFace, etc.).
 - Fácil configuração e expansão.
 
 ---
@@ -69,6 +69,7 @@ Crie um arquivo `.env` na raiz do projeto e adicione as seguintes variáveis (su
 CHAT_PROVIDER=openai
 OPENAI_API_KEY=sk-...
 DEEPSEEK_API_KEY=sk-...
+HUGGING_FACE_API_KEY=hf_...
 DATABASE_URL=sqlite:///chatbot.db
 ```
 

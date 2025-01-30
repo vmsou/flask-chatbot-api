@@ -4,6 +4,7 @@ from abc import ABC, abstractmethod
 from typing import Literal
 
 from openai import OpenAI
+import requests
 
 
 class ChatAPI(ABC):
@@ -43,16 +44,36 @@ class DeepSeekChatAPI(ChatAPI):
             stream=False
         )
         return response.choices[0].message.content
+    
+
+class HuggingFaceChatAPI(ChatAPI):
+    def __init__(self, api_key: str = None, model="deepseek-ai/DeepSeek-R1"):
+        super().__init__()
+        self.model = model
+        self.api_key = os.getenv("HUGGING_FACE_API_KEY") if not api_key else api_key
+        self.client = OpenAI(base_url="https://huggingface.co/api/inference-proxy/together", api_key=self.api_key)
+
+    def reply(self, message):
+        messages = [
+            {"role": "user", "content": message},
+        ]
+        completion = self.client.chat.completions.create(
+            model=self.model,
+            messages=messages,
+            max_tokens=500
+        )
+        return completion.choices[0].message.content
 
 
 class ChatAPIProvider:
     PROVIDERS = {
         "openai": OpenAIChatAPI,
-        "deepseek": DeepSeekChatAPI
+        "deepseek": DeepSeekChatAPI,
+        "huggingface": HuggingFaceChatAPI,
     }
 
     @staticmethod
     def get(name: Literal['openai', 'deepseek']) -> ChatAPI:
-        return ChatAPIProvider.PROVIDERS.get(name.lower())()
-
-        
+        name = name.lower()
+        if name in ChatAPIProvider.PROVIDERS: return ChatAPIProvider.PROVIDERS.get(name.lower())()
+        raise Exception(f"Provedor não encontrado: {name}")

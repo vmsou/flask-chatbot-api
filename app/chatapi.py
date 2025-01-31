@@ -25,7 +25,7 @@ class OpenAIChatAPI(ChatAPI):
             messages=[{"role": "user", "content": message}]
         )
         return completion.choices[0].message.content
-
+    
 
 class DeepSeekChatAPI(ChatAPI):
     def __init__(self, api_key: str = None):
@@ -53,7 +53,7 @@ class ChatAPIProvider:
     @staticmethod
     def get(name: Literal['openai', 'deepseek', 'huggingface']) -> ChatAPI:
         name = name.lower().strip()
-        if name == "openai": return OpenAIChatAPI(model=os.getenv("API_MODEL"), api_key=os.getenv("API_KEY"), api_url=os.getenv("API_URL"))
-        elif name == "deepseek": return DeepSeekChatAPI(api_key=os.getenv("API_KEY"))
-        elif name == "huggingface": return HuggingFaceChatAPI(model=os.getenv("API_MODEL"), api_key=os.getenv("API_KEY"))
+        if name == "openai": return OpenAIChatAPI(model=os.getenv("API_MODEL"), api_key=os.getenv("OPENAI_API_KEY"), api_url=os.getenv("API_URL"))
+        elif name == "deepseek": return DeepSeekChatAPI(api_key=os.getenv("DEEPSEEK_API_KEY"))
+        elif name == "huggingface": return HuggingFaceChatAPI(model=os.getenv("API_MODEL"), api_key=os.getenv("HUGGINGFACE_API_KEY"))
         raise Exception(f"Provedor não encontrado: {name}")

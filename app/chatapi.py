@@ -20,7 +20,6 @@ class OpenAIChatAPI(ChatAPI):
         self.client = OpenAI(api_key=api_key, base_url=api_url)
 
     def reply(self, message: str) -> str:
-        print(f"{self.model=}: {message=}")
         completion = self.client.chat.completions.create(
             model=self.model,
             messages=[{"role": "user", "content": message}]
@@ -31,7 +30,7 @@ class OpenAIChatAPI(ChatAPI):
 class DeepSeekChatAPI(ChatAPI):
     def __init__(self, api_key: str = None):
         super().__init__()
-        self.chat_api = OpenAIChatAPI(model="deepseek-chat", api_key=api_key, api_url="https://api.deepseek.com")
+        self.chat_api: ChatAPI = OpenAIChatAPI(model="deepseek-chat", api_key=api_key, api_url="https://api.deepseek.com")
 
     def reply(self, message: str) -> str: return self.chat_api.reply(message)
     
@@ -39,20 +38,10 @@ class DeepSeekChatAPI(ChatAPI):
 class HuggingFaceChatAPI(ChatAPI):
     def __init__(self, api_key: str = None, model="deepseek-ai/DeepSeek-R1"):
         super().__init__()
-        self.model = model
-        self.api_key = os.getenv("HUGGING_FACE_API_KEY") if not api_key else api_key
-        self.client = OpenAI(base_url="https://huggingface.co/api/inference-proxy/together", api_key=self.api_key)
+        self.chat_api: ChatAPI = OpenAIChatAPI(model=model, api_key=api_key, api_url="https://huggingface.co/api/inference-proxy/together")
 
-    def reply(self, message):
-        messages = [
-            {"role": "user", "content": message},
-        ]
-        completion = self.client.chat.completions.create(
-            model=self.model,
-            messages=messages,
-            max_tokens=500
-        )
-        return completion.choices[0].message.content
+    def reply(self, message: str) -> str: return self.chat_api.reply(message)
+
 
 class ChatAPIProvider:
     PROVIDERS = {

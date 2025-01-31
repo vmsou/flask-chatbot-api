@@ -66,10 +66,9 @@ pip install -r requirements.txt
 ### 4. Configurar Variáveis de Ambiente
 Crie um arquivo `.env` na raiz do projeto e adicione as seguintes variáveis (substitua pelos seus valores reais):
 ```bash
-CHAT_PROVIDER=openai
-OPENAI_API_KEY=sk-...
-DEEPSEEK_API_KEY=sk-...
-HUGGING_FACE_API_KEY=hf_...
+CHAT_PROVIDER=openai # openai, deepseek, huggingface
+API_KEY=sk-...
+API_URL=localhost:11434/api/chat # optional
 DATABASE_URL=sqlite:///chatbot.db
 ```
 

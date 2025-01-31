@@ -29,21 +29,11 @@ class OpenAIChatAPI(ChatAPI):
 
 
 class DeepSeekChatAPI(ChatAPI):
-    def __init__(self, api_key: str = None, system_content: str= "Você é um assistente útil."):
+    def __init__(self, api_key: str = None):
         super().__init__()
-        self.client = OpenAI(api_key=os.getenv("DEEPSEEK_API_KEY") if api_key is None else api_key, base_url="https://api.deepseek.com")
-        self.system_content = system_content
+        self.chat_api = OpenAIChatAPI(model="deepseek-chat", api_key=api_key, api_url="https://api.deepseek.com")
 
-    def reply(self, message:str) -> str:
-        response = self.client.chat.completions.create(
-            model="deepseek-chat",
-            messages=[
-                {"role": "system", "content": self.system_content},
-                {"role": "user", "content": message}
-            ],
-            stream=False
-        )
-        return response.choices[0].message.content
+    def reply(self, message: str) -> str: return self.chat_api.reply(message)
     
 
 class HuggingFaceChatAPI(ChatAPI):
@@ -72,7 +62,9 @@ class ChatAPIProvider:
     }
 
     @staticmethod
-    def get(name: Literal['openai', 'deepseek']) -> ChatAPI:
-        name = name.lower()
-        if name in ChatAPIProvider.PROVIDERS: return ChatAPIProvider.PROVIDERS.get(name.lower())(model=os.getenv("API_MODEL"), api_key=os.getenv("API_KEY"), api_url=os.getenv("API_URL"))
+    def get(name: Literal['openai', 'deepseek', 'huggingface']) -> ChatAPI:
+        name = name.lower().strip()
+        if name == "openai": return OpenAIChatAPI(model=os.getenv("API_MODEL"), api_key=os.getenv("API_KEY"), api_url=os.getenv("API_URL"))
+        elif name == "deepseek": return DeepSeekChatAPI(api_key=os.getenv("API_KEY"))
+        elif name == "huggingface": return HuggingFaceChatAPI(model=os.getenv("API_MODEL"), api_key=os.getenv("API_KEY"))
         raise Exception(f"Provedor não encontrado: {name}")

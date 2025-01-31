@@ -6,3 +6,4 @@ sqlalchemy
 psycopg2-binary  # Driver PostgreSQL
 selenium
 pytest
+flask-cors

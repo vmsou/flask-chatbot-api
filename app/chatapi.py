@@ -4,7 +4,6 @@ from abc import ABC, abstractmethod
 from typing import Literal
 
 from openai import OpenAI
-import requests
 
 
 class ChatAPI(ABC):
@@ -13,20 +12,21 @@ class ChatAPI(ABC):
         ...
 
 class OpenAIChatAPI(ChatAPI):
-    def __init__(self, api_key: str = None, system_content: str = "Você é um assistente útil."):
+    def __init__(self, model: str = None, api_key: str = None, api_url: str = None):
         super().__init__()
-        self.client = OpenAI(api_key=os.getenv("OPENAI_API_KEY") if api_key is None else api_key)
-        self.system_content = system_content
+        self.model = model
+        self.api_key = api_key
+        self.api_url = api_url
+        self.client = OpenAI(api_key=api_key, base_url=api_url)
 
     def reply(self, message: str) -> str:
-        response = self.client.chat.completions.create(
-            model='gpt-4o-mini',
-            messages=[
-                {"role": "system", "content": self.system_content},
-                {"role": "user", "content": message}
-            ]
+        print(f"{self.model=}: {message=}")
+        completion = self.client.chat.completions.create(
+            model=self.model,
+            messages=[{"role": "user", "content": message}]
         )
-        return response['choices'][0]['message']['content']
+        return completion.choices[0].message.content
+
 
 class DeepSeekChatAPI(ChatAPI):
     def __init__(self, api_key: str = None, system_content: str= "Você é um assistente útil."):
@@ -64,7 +64,6 @@ class HuggingFaceChatAPI(ChatAPI):
         )
         return completion.choices[0].message.content
 
-
 class ChatAPIProvider:
     PROVIDERS = {
         "openai": OpenAIChatAPI,
@@ -75,5 +74,5 @@ class ChatAPIProvider:
     @staticmethod
     def get(name: Literal['openai', 'deepseek']) -> ChatAPI:
         name = name.lower()
-        if name in ChatAPIProvider.PROVIDERS: return ChatAPIProvider.PROVIDERS.get(name.lower())()
+        if name in ChatAPIProvider.PROVIDERS: return ChatAPIProvider.PROVIDERS.get(name.lower())(model=os.getenv("API_MODEL"), api_key=os.getenv("API_KEY"), api_url=os.getenv("API_URL"))
         raise Exception(f"Provedor não encontrado: {name}")
